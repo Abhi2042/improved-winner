@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MBBS Attendance Tracker</title>
-<meta name="description" content="Track lecture, practical and clinical posting attendance for Phase II MBBS.">
+<meta name="description" content="Track lecture, practical and clinical posting attendance for Phase II MBBS with Exam Mode & Bunk Planner.">
 <meta name="theme-color" content="#2f4bd8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -16,7 +16,7 @@
 :root{--bg:#eaf0f6;--card:#fff;--ink:#12203a;--mut:#5d6b82;--line:#d9e1ec;--acc:#2f4bd8;--ok:#0f8a5f;--warn:#b7791f;--bad:#c2362f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="oled"]){--bg:#0d1424;--card:#152038;--ink:#e6ecf7;--mut:#93a1bb;--line:#24314d;--acc:#8ea2ff;--ok:#3ecf95;--warn:#e8b04b;--bad:#ff7d75}}
 :root[data-theme="dark"]{--bg:#0d1424;--card:#152038;--ink:#e6ecf7;--mut:#93a1bb;--line:#24314d;--acc:#8ea2ff;--ok:#3ecf95;--warn:#e8b04b;--bad:#ff7d75}
-:root[data-theme="oled"]{--bg:#000000;--card:#000000;--ink:#e6ecf7;--mut:#8899ac;--line:#222222;--acc:#7089ff;--ok:#3ecf95;--warn:#e8b04b;--bad:#ff7d75}
+:root[data-theme="oled"]{--bg:#000000;--card:#050505;--ink:#f2f5fb;--mut:#9aa8bb;--line:#252525;--acc:#8ea2ff;--ok:#3ecf95;--warn:#e8b04b;--bad:#ff7d75}
 html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
 *{box-sizing:border-box}
 body{margin:0 auto;background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,-apple-system,sans-serif;padding:16px 16px 96px;max-width:560px;line-height:1.35}
@@ -48,7 +48,8 @@ small,.m{color:var(--mut);font-size:13px}
 .msg{font-size:14px}
 .ring{display:flex;align-items:center;gap:18px;margin:14px 0 6px}
 .ring svg{flex:none}
-.tools{display:flex;gap:8px;margin:12px 0}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.tools .btn{flex:1 1 calc(50% - 4px)}
 .btn{flex:1;padding:10px 8px}
 .seg{display:flex;gap:6px}.seg button{flex:1}
 .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
@@ -57,26 +58,96 @@ small,.m{color:var(--mut);font-size:13px}
 .main:disabled{opacity:.4}
 .err{color:var(--bad);font-size:14px;min-height:20px;margin-top:6px}
 label{display:block;font-weight:600;font-size:14px;margin-top:12px}
-input[type=text],input[type=tel]{width:100%;margin-top:6px;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font-family:inherit;font-size:16px}
+input[type=text],input[type=tel],select{width:100%;margin-top:6px;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font-family:inherit;font-size:16px}
 .set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
 .set:last-child{border:0}
 .set input[type=number],input[type=date]{width:84px;padding:8px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font-family:inherit;font-size:15px}
 input[type=date]{width:auto;margin-top:6px}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--acc);cursor:pointer}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:6px;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line)}
 nav[hidden]{display:none}
 nav button{flex:1;max-width:180px;padding:10px 0;border:0;border-radius:12px;background:transparent;color:var(--mut);font-family:inherit;font-weight:600;font-size:14px}
 nav button.on{background:var(--acc);color:var(--bg)}
-button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+
+/* Attendance Sarthi Visual Polish */
+:root{--bg:#f3f6fc;--card:#fff;--ink:#17243b;--mut:#66758d;--line:#e0e7f1;--acc:#385be8;--ok:#07875b;--warn:#a96b12;--bad:#c43c45;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="dark"]):not([data-theme="oled"]){--bg:#080e1b;--card:#111b2d;--ink:#edf2fc;--mut:#9aa9c1;--line:#263651;--acc:#91a7ff;--ok:#43d6a0;--warn:#f0bd5a;--bad:#ff7e83;color-scheme:dark}}
+:root[data-theme="light"]{--bg:#f3f6fc;--card:#fff;--ink:#17243b;--mut:#66758d;--line:#e0e7f1;--acc:#385be8;--ok:#07875b;--warn:#a96b12;--bad:#c43c45;color-scheme:light}
+:root[data-theme="dark"]{--bg:#080e1b;--card:#111b2d;--ink:#edf2fc;--mut:#9aa9c1;--line:#263651;--acc:#91a7ff;--ok:#43d6a0;--warn:#f0bd5a;--bad:#ff7e83;color-scheme:dark}
+:root[data-theme="oled"]{--bg:#000;--card:#080808;--ink:#f5f7fc;--mut:#9ca9bc;--line:#242424;--acc:#91a7ff;--ok:#43d6a0;--warn:#f0bd5a;--bad:#ff7e83;color-scheme:dark}
+html{min-height:100%;background:var(--bg)}
+body{max-width:720px;padding:24px 20px calc(112px + env(safe-area-inset-bottom,0px));font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.012em;background:radial-gradient(ellipse at 50% -18%,color-mix(in srgb,var(--acc) 13%,transparent),transparent 46%),var(--bg);}
+#v{min-height:75vh}
+#v:before{content:"ATTENDANCE  /  SARTHI";display:block;margin:3px 0 23px;color:var(--acc);font-size:11px;font-weight:800;letter-spacing:.19em}
+h1{font-size:clamp(29px,6vw,38px);line-height:1.08;letter-spacing:-.055em;margin:0 0 7px;font-weight:850}
+h2{font-size:18px;letter-spacing:-.025em;margin:27px 0 5px}
+h3{font-size:17px;letter-spacing:-.025em;font-weight:750}
+small,.m{font-size:13px;line-height:1.5;color:var(--mut)}
+.card{background:linear-gradient(145deg,color-mix(in srgb,var(--card) 96%,white 4%),var(--card));border:1px solid var(--line);border-radius:22px;padding:18px;margin:13px 0;box-shadow:0 8px 28px #00000012}
+.slot{border-left:3px solid var(--c);padding-left:17px}
+.tm{text-transform:uppercase;letter-spacing:.09em;font-size:11px;font-weight:800;margin-bottom:7px}
+.nav{margin:23px 0 14px;gap:12px}
+.ic{width:46px;height:46px;border-radius:16px;background:var(--card);border-color:var(--line);font-size:25px;transition:transform .15s,background .15s}
+.ic:active,button:active{transform:scale(.97)}
+.nav .dt b{letter-spacing:-.03em}
+input[type=date],input[type=text],input[type=tel],select,.set input[type=number]{background:color-mix(in srgb,var(--bg) 80%,var(--card));border:1px solid var(--line);border-radius:13px;color:var(--ink);min-height:42px}
+.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0 18px}
+.tile{padding:13px 15px;border-radius:17px;background:var(--card);border:1px solid var(--line)}
+.tile small{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:750}
+.tile b{font-size:23px;letter-spacing:-.04em;margin-top:3px}
+.acts{gap:7px;margin-top:15px}
+.acts button,.seg button,.grid button,.btn{min-height:43px;border-radius:13px;border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 60%,var(--card));font-size:13px;font-weight:750;transition:background .15s,border-color .15s,transform .15s}
+.acts .p.on{background:var(--ok);border-color:var(--ok);color:#04180f}
+.acts .a.on{background:var(--bad);border-color:var(--bad);color:#230609}
+.acts .c.on{background:var(--mut);border-color:var(--mut);color:#111}
+.tools{gap:8px;margin:14px 0}
+.tools .btn{flex:1 1 calc(50% - 4px);padding:11px 10px}
+.btn.main,.main{background:var(--acc);border-color:var(--acc);color:#071022;font-weight:850;min-height:49px;border-radius:15px;box-shadow:0 8px 22px color-mix(in srgb,var(--acc) 20%,transparent)}
+.btn:disabled{opacity:.4}
+.seg{padding:4px;border:1px solid var(--line);background:var(--bg);border-radius:15px}
+.seg button{border:0;background:transparent}
+.seg .on,.grid .on{background:var(--acc);border-color:var(--acc);color:#071022}
+.grid{gap:7px}
+.grid button{border-radius:12px}
+.bar{height:8px;border-radius:99px;background:color-mix(in srgb,var(--line) 75%,var(--bg));margin:13px 0 10px}
+.bar i{border-radius:99px}
+.pc{font-size:27px;letter-spacing:-.05em}
+.chip{padding:4px 9px;font-size:10px;letter-spacing:.04em;text-transform:uppercase;border-radius:8px}
+.ring{gap:20px;padding:20px}
+.ring svg{width:128px;height:128px}
+.set{padding:14px 0}
+label{font-size:13px;letter-spacing:.01em}
+.err{font-size:13px}
+nav{left:50%;right:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(96%,520px);padding:7px;background:color-mix(in srgb,var(--card) 92%,transparent);border:1px solid var(--line);border-radius:20px;box-shadow:0 12px 40px #0005;backdrop-filter:blur(18px);gap:4px}
+nav button{max-width:none;min-height:45px;border-radius:14px;font-size:12px}
+nav button:before{display:block;font-size:15px;line-height:1.1;margin-bottom:3px}
+nav button[data-v="today"]:before{content:"◷"}
+nav button[data-v="over"]:before{content:"▥"}
+nav button[data-v="bunk"]:before{content:"🎲"}
+nav button[data-v="set"]:before{content:"⚙"}
+nav button.on{background:var(--acc);color:#071022}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+@media(min-width:600px){body{padding-top:34px}.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}.card{padding:20px 22px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
 <main id="v"></main>
-<nav hidden><button data-v="today" onclick="sv('today')">Today</button><button data-v="over" onclick="sv('over')">Overview</button><button data-v="set" onclick="sv('set')">Settings</button></nav>
+<nav hidden><button data-v="today" onclick="sv('today')">Today</button><button data-v="over" onclick="sv('over')">Overview</button><button data-v="bunk" onclick="sv('bunk')">Bunk Simulators</button><button data-v="set" onclick="sv('set')">Settings</button></nav>
+<footer style="text-align:center;margin-top:24px;padding:12px 0 4px;font-size:12px;color:var(--mut);letter-spacing:.02em">
+  Made with 💖 for students of ASIMSR by Abhinav (BR07)
+</footer>
 <script>
-const START=new Date(2026,8,28),LEC_END=new Date(2027,7,31),END=new Date(2027,7,31);
+const START=new Date(2026,8,28),LEC_END=new Date(2027,7,31),CLINICAL_THEORY_END=new Date(2027,0,31),END=new Date(2027,7,31);
+const ROUND1_END=new Date(2027,4,28); // 28 May 2027
+const INT_I_START=new Date(2027,2,1);   // 1 March 2027
+const INT_II_START=new Date(2027,5,28); // 28 June 2027
+
 const SC={Pharmacology:'#7c5cd6',Microbiology:'#0f9d8a',Pathology:'#d9467a',Medicine:'#2f6fe0','Community Medicine':'#e08a1e','Forensic Medicine':'#6b7a90',ENT:'#c2562f',Ophthalmology:'#1a9ad6','Obs & Gynae':'#c23a9a',Paediatrics:'#4aa53a',Surgery:'#b8302f'};
 const DEPT=['Medicine','Surgery','Obs & Gynae','Paediatrics','Community Medicine','Ophthalmology','ENT'];
-const ROT=[
+const ROT1=[
  {ranges:[[new Date(2026,8,28),new Date(2026,9,27)]],label:'28 Sep – 27 Oct 2026'},
  {ranges:[[new Date(2026,9,28),new Date(2026,10,5)],[new Date(2026,10,12),new Date(2026,11,1)]],label:'28 Oct – 5 Nov 2026; 12 Nov – 1 Dec 2026'},
  {ranges:[[new Date(2026,11,2),new Date(2026,11,24)],[new Date(2027,0,4),new Date(2027,0,11)]],label:'2 Dec – 24 Dec 2026; 4 Jan – 11 Jan 2027'},
@@ -86,10 +157,17 @@ const ROT=[
  {ranges:[[new Date(2027,3,29),new Date(2027,4,28)]],label:'29 Apr – 28 May 2027'}
 ];
 const BATCHES='ABCDEFGHIJKLMN'.split('');
-const def=()=>({name:'',cb:'',pg:'A',done:false,tT:75,tP:80,theme:'auto',rec:{}});
+const def=()=>({
+ name:'',cb:'',pg:'A',done:false,tT:75,tP:80,theme:'auto',rec:{},
+ examModeEnabled:false,prepDaysI:3,prepDaysII:3,
+ round2Enabled:false,round2DaysPerRotation:14,
+ bunkSub:'',bunkCount:1,
+ routineSkipTime:'morn',routineSkipFreq:'sat'
+});
 const LS=(k,v)=>{try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}};
 const DATA_SCHEMA_VERSION=1;
 const profileKey=p=>'mbbs-u-'+p, safetyKey=p=>'mbbs-safe-'+p;
+
 function makeSafetyCopy(p){
  if(!p)return false;
  try{
@@ -99,6 +177,7 @@ function makeSafetyCopy(p){
   return true;
  }catch(e){return false}
 }
+
 let U=null,P='',view='today',armed=false;
 const save=()=>{if(U&&P){makeSafetyCopy(P);LS(profileKey(P),U)}};
 {const p=LS('mbbs-cur');if(p){const u=LS(profileKey(p));if(u){U=Object.assign(def(),u);P=p}}}
@@ -109,10 +188,58 @@ const clamp=d=>d<START?new Date(START):d>END?new Date(END):d;
 const t0=new Date(),TOD=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate());let cur=clamp(TOD);
 const $=s=>document.querySelector(s);
 const fd=d=>d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'});
-const perOf=d=>ROT.findIndex(r=>r.ranges.some(p=>d>=p[0]&&d<=p[1]));
+
 const bi=()=>BATCHES.indexOf(U.cb)%7;
+
+function getRound2Ranges(){
+ if(!U||!U.round2Enabled)return[];
+ const days=Math.max(1,parseInt(U.round2DaysPerRotation)||14);
+ const ranges=[];
+ let curr=new Date(2027,4,29); // 29 May 2027
+ for(let i=0;i<7;i++){
+  const start=new Date(curr);
+  const end=new Date(curr);
+  end.setDate(end.getDate()+(days-1));
+  if(end>END)end.setTime(END.getTime());
+  ranges.push({
+   index:i,
+   ranges:[[start,end]],
+   label:`R2: ${fd(start)} – ${fd(end)}`
+  });
+  curr=new Date(end);
+  curr.setDate(curr.getDate()+1);
+  if(curr>END)break;
+ }
+ return ranges;
+}
+
+function perOf(d){
+ const r1=ROT1.findIndex(r=>r.ranges.some(p=>d>=p[0]&&d<=p[1]));
+ if(r1>=0)return r1;
+ if(U&&U.round2Enabled&&d>ROUND1_END){
+  const r2Ranges=getRound2Ranges();
+  const r2Idx=r2Ranges.findIndex(r=>r.ranges.some(p=>d>=p[0]&&d<=p[1]));
+  if(r2Idx>=0)return r2Idx;
+ }
+ return -1;
+}
+
 const deptFor=p=>DEPT[(bi()+p)%7];
 const rotIdx=dep=>(DEPT.indexOf(dep)-bi()+7)%7;
+
+function isExamPrepDay(d){
+ if(!U||!U.examModeEnabled)return false;
+ const checkPrep=(startDate,days)=>{
+  if(!days||days<=0)return false;
+  const end=new Date(startDate);
+  end.setDate(end.getDate()-1);
+  const start=new Date(end);
+  start.setDate(start.getDate()-(days-1));
+  return d>=start&&d<=end;
+ };
+ return checkPrep(INT_I_START,U.prepDaysI)||checkPrep(INT_II_START,U.prepDaysII);
+}
+
 function theme(){
  const t=U?U.theme:'auto';
  if(t==='auto'){
@@ -120,40 +247,62 @@ function theme(){
  }else{
   document.documentElement.dataset.theme=t;
  }
+ const meta=document.querySelector('meta[name="theme-color"]');
+ if(meta)meta.content=t==='oled'?'#000000':t==='dark'?'#0d1424':t==='light'?'#eaf0f6':'#2f4bd8';
 }
+
 function slots(d){
  const w=d.getDay();if(!w)return[];
  const lec=d<=LEC_END,r=[];
+ const isPostJan=d>CLINICAL_THEORY_END;
  if(lec){
   const odd=Math.ceil(d.getDate()/7)%2===1;
-  r.push({id:'s1',t:'9 to 10 AM',sub:['','Pharmacology','Microbiology','Pathology','Medicine',odd?'Ophthalmology':'ENT',odd?'Obs & Gynae':'Paediatrics'][w],ty:'T',n:w>=5?'Lecture, alternates by week of the month':'Lecture'});
+  let morningSub = ['','Pharmacology','Microbiology','Pathology','Medicine',odd?'Ophthalmology':'ENT',odd?'Obs & Gynae':'Paediatrics'][w];
+  if(isPostJan){
+   morningSub = ['','Pharmacology','Microbiology','Pathology','Pharmacology','Pathology',odd?'Ophthalmology':'ENT'][w];
+  }
+  r.push({id:'s1',t:'9 to 10 AM',sub:morningSub,ty:'T',n:isPostJan?(w===6?'Lecture, alternates by week':'Core theory lecture'):(w>=5?'Lecture, alternates by week of the month':'Lecture')});
  }
- if(w>=1&&w<=5){const p=perOf(d);r.push(p<0?{t:'10 AM to 1 PM',info:'No clinical posting is scheduled on this date.'}:{id:'s2',t:'10 AM to 1 PM',sub:deptFor(p),ty:'C',n:'Clinical posting, rotation '+(p+1)+' of 7'})}
+ if(w>=1&&w<=5){
+  const p=perOf(d);
+  const isR2=d>ROUND1_END;
+  r.push(p<0?{t:'10 AM to 1 PM',info:'No clinical posting is scheduled on this date.'}:{id:'s2',t:'10 AM to 1 PM',sub:deptFor(p),ty:'C',n:`Clinical posting (${isR2?'Round 2':'Round 1'}), rotation ${p+1} of 7`});
+ }
  else if(lec){[['Pathology','10 to 11 AM'],['Microbiology','11 AM to 12 PM'],['Pharmacology','12 to 1 PM']].forEach((a,i)=>r.push({id:'f'+i,t:a[1],sub:a[0],ty:'P',n:'FAP, remaining students',grp:'fap'}));r.push({id:'fv',t:'10 AM to 1 PM',sub:'Field Visit',ty:'P',n:'Field visit, remaining students',grp:'fap'})}
  if(lec){
   const PR=[0,['Pharmacology','Microbiology'],['Microbiology','Pathology'],['Pathology','Pharmacology'],['Pharmacology','Microbiology'],['Pathology','Pharmacology'],['Microbiology','Pathology']][w];
-  r.push({id:'s3',t:'2 to 4 PM',sub:PR[U.pg==='A'?0:1],ty:'P',n:'Practical, SGT, DOAP (group '+U.pg+')'},{id:'s4',t:'4 to 5 PM',sub:['','Microbiology','Pathology','Pharmacology','Community Medicine','Forensic Medicine','Surgery'][w],ty:'T',n:'Lecture'});
+  let aftLecSub = ['','Microbiology','Pathology','Pharmacology','Community Medicine','Forensic Medicine','Surgery'][w];
+  r.push({id:'s3',t:'2 to 4 PM',sub:PR[U.pg==='A'?0:1],ty:'P',n:'Practical, SGT, DOAP (group '+U.pg+')'},{id:'s4',t:'4 to 5 PM',sub:aftLecSub,ty:'T',n:'Lecture'});
  }
  return r;
 }
+
 function stats(){
  const m={};
  for(let d=new Date(START);d<=END;d.setDate(d.getDate()+1)){
   const rc=U.rec[iso(d)]||{};
+  const isPrep=isExamPrepDay(d);
+
   for(const s of slots(d)){
    if(!s.id)continue;
-   const key=s.sub+'|'+s.ty,o=m[key]||(m[key]={sub:s.sub,ty:s.ty,tot:0,p:0,a:0}),v=rc[s.id];
+   const key=s.sub+'|'+s.ty,o=m[key]||(m[key]={sub:s.sub,ty:s.ty,tot:0,p:0,a:0});
+   let v=rc[s.id];
+   if(isPrep&&v!=='C'){
+    v='A';
+   }
    if(v==='C')continue;
    o.tot++;if(v==='P')o.p++;else if(v==='A')o.a++;
   }
  }
  return Object.values(m).map(calc);
 }
+
 function calc(o){
  const t=(o.ty==='T'?U.tT:U.tP)/100,h=o.p+o.a,pct=h?o.p/h*100:null;
  const need=Math.max(0,Math.ceil(t*o.tot-1e-9)-o.p),left=o.tot-h,skip=left-need;
  return{...o,h,pct,t:t*100,need,left,skip,st:h===0?'new':pct>=t*100+5?'safe':pct>=t*100?'edge':'low',run:h&&pct<t*100?Math.ceil((t*h-o.p)/(1-t)-1e-9):0};
 }
+
 function agg(L){
  const r={T:[0,0],P:[0,0],C:[0,0]};
  L.forEach(o=>{r[o.ty][0]+=o.p;r[o.ty][1]+=o.p+o.a});
@@ -162,7 +311,9 @@ function agg(L){
 }
 const fp=v=>v==null?'-':v.toFixed(1)+'%';
 const LBL={safe:'On track',edge:'Close to the limit',low:'Below target',new:'Not started'};
+
 function login(){return`<h1>Welcome</h1><small>Sign in to keep your attendance saved on this phone.</small><div class="card"><label for="ln">Your name</label><input id="ln" type="text" autocomplete="name" maxlength="40"><label for="lp">Phone number</label><input id="lp" type="tel" inputmode="numeric" autocomplete="tel" maxlength="14" placeholder="10-digit mobile number"><div class="err" id="le" role="alert"></div><button class="btn main" onclick="doLogin()">Continue</button></div><p class="m">There is no OTP check. Your marks are stored on this device under your number.</p>`}
+
 function doLogin(){
  const n=$('#ln').value.trim(),p=$('#lp').value.replace(/\D/g,'').replace(/^91(?=\d{10}$)/,'');
  if(!n){$('#le').textContent='Enter your name.';return}
@@ -170,62 +321,347 @@ function doLogin(){
  U=Object.assign(def(),LS('mbbs-u-'+p)||{});U.name=n;P=p;LS('mbbs-cur',p);save();
  theme();render();
 }
+
 const grid=(k)=>`<div class="grid">${BATCHES.map(l=>`<button class="${U[k]===l?'on':''}" onclick="setS('${k}','${l}')">${l}</button>`).join('')}</div>`;
 const pgSeg=()=>`<div class="seg" style="margin-top:10px"><button class="${U.pg==='A'?'on':''}" onclick="setS('pg','A')">Group A</button><button class="${U.pg==='B'?'on':''}" onclick="setS('pg','B')">Group B</button></div>`;
+
 function setup(){return`<h1>Hey ${esc(U.name)}</h1><small>Pick your batch so the calendar follows your postings.</small><div class="card"><b>Clinical posting batch</b><br><small>Your letter from the batch list, A to N</small>${grid('cb')}</div><div class="card"><b>Practical group</b><br><small>The (A) or (B) shown at 2 to 4 PM in the timetable</small>${pgSeg()}</div><button class="btn main" ${U.cb?'':'disabled'} onclick="finish()">Start tracking</button>`}
+
 function finish(){U.done=true;save();render()}
+
 function today(){
  const k=iso(cur),rc=U.rec[k]||{},sl=slots(cur),g=agg(stats());
  const mk=sl.filter(s=>rc[s.id]==='P'||rc[s.id]==='A'),pr=sl.filter(s=>rc[s.id]==='P').length;
+ const isPrep=isExamPrepDay(cur);
+
  let h=`<h1>Hey ${esc(U.name)}</h1><small>Clinical batch ${U.cb}, practical group ${U.pg}</small><div class="nav"><button class="ic" aria-label="Previous day" onclick="go(-1)">‹</button><div class="dt"><b style="font-size:20px">${cur.toLocaleDateString('en-IN',{weekday:'long'})}</b><br><small>${cur.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</small><br><input type="date" value="${k}" min="2026-09-28" max="2027-08-31" aria-label="Jump to date" onchange="jump(this.value)"></div><button class="ic" aria-label="Next day" onclick="go(1)">›</button></div>`;
+ 
+ if(isPrep){
+  h+=`<div class="card" style="border:1.5px solid var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--card))"><b style="color:var(--warn)">📝 Exam Prep Leave Active</b><br><small>Exam mode is currently projecting absences for this day in your overall goals.</small></div>`;
+ }
+
  h+=`<div class="tiles"><div class="tile"><small>Overall</small><b>${fp(g.all)}</b></div><div class="tile"><small>Theory</small><b>${fp(g.T)}</b></div><div class="tile"><small>Practical</small><b>${fp(g.P)}</b></div><div class="tile"><small>Clinical</small><b>${fp(g.C)}</b></div></div>`;
+ 
  if(!sl.length)return h+`<div class="card"><h3>${cur.getDay()?'No classes published yet':'Sunday, no classes'}</h3><small>${cur.getDay()?'The lecture timetable is published until 31 Aug 2027.':'Use the arrows to move to another day.'}</small></div>`;
+ 
  const fapS=sl.filter(s=>s.grp==='fap'),rest=sl.filter(s=>s.grp!=='fap');
  h+=rest.map(s=>{if(!s.id)return`<div class="card"><div class="tm">${s.t}</div><h3>Clinical posting</h3><small>${s.info}</small></div>`;const v=rc[s.id];return`<div class="card slot" style="--c:${SC[s.sub]||'#5d6b82'}"><div class="tm">${s.t}</div><h3>${esc(s.sub)}</h3><small>${esc(s.n)}</small><div class="acts"><button class="p ${v==='P'?'on':''}" onclick="mark('${s.id}','P')">Present</button><button class="a ${v==='A'?'on':''}" onclick="mark('${s.id}','A')">Absent</button><button class="c ${v==='C'?'on':''}" onclick="mark('${s.id}','C')">Holiday</button></div></div>`}).join('');
  if(fapS.length)h+=`<div class="card" style="border:1.5px dashed var(--acc)"><h3>FAP, remaining students</h3><small>Only mark these if you were among the remaining students that day.</small>`+fapS.map(s=>{const v=rc[s.id];return`<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)"><div class="tm">${s.t}</div><b>${esc(s.sub)}</b><div class="acts"><button class="p ${v==='P'?'on':''}" onclick="mark('${s.id}','P')">Present</button><button class="a ${v==='A'?'on':''}" onclick="mark('${s.id}','A')">Absent</button><button class="c ${v==='C'?'on':''}" onclick="mark('${s.id}','C')">Holiday</button></div></div>`}).join('')+`</div>`;
- h+=`<div class="tools"><button class="btn" onclick="dayAll('P')">All present</button><button class="btn" onclick="dayAll('C')">Day off</button><button class="btn" onclick="dayAll()">Clear day</button></div>`;
+ h+=`<div class="tools"><button class="btn" onclick="dayAll('P')">All present</button><button class="btn" onclick="dayAll('A')">All absent</button><button class="btn" onclick="dayAll('C')">Day off</button><button class="btn" onclick="dayAll()">Clear day</button></div>`;
  if(mk.length)h+=`<p class="m" style="text-align:center">You attended ${pr} of ${mk.length} marked classes today.</p>`;
  return h;
 }
+
 function card(o){
  let msg=o.h===0?`${o.tot} classes in the published timetable.`:o.skip<0?`Target is out of reach. Your best possible is ${(100*(o.p+o.left)/o.tot).toFixed(0)}%.`:o.need>0?`Attend at least ${o.need} of the next ${o.left} classes.`:`You can skip ${o.skip} of the next ${o.left} classes.`;
  if(o.run>0&&o.run<=o.left)msg+=` Attending the next ${o.run} in a row gets you back to ${o.t}%.`;
  return`<div class="card"><div class="row"><div><h3>${esc(o.sub)}</h3><span class="chip ${o.st}">${LBL[o.st]}</span></div><div class="pc ${o.st}">${fp(o.pct)}</div></div><div class="bar" style="--c:${SC[o.sub]||'#5d6b82'}"><i style="width:${o.pct==null?0:o.pct}%"></i><b style="left:calc(${o.t}% - 1px)"></b></div><div class="m">${o.p} attended, ${o.a} missed, ${o.tot} in total. The line marks ${o.t}%.</div><div class="msg" style="margin-top:6px">${msg}</div></div>`;
 }
-function rot(){const cp=perOf(TOD);return`<div class="card"><b>Your rotation, batch ${U.cb}</b>`+ROT.map((p,i)=>`<div class="set" style="padding:8px 0;${i===cp?'font-weight:800':''}"><span>${p.label}</span><span style="color:${SC[deptFor(i)]};text-align:right">${deptFor(i)}${i===cp?' (now)':''}</span></div>`).join('')+'</div>'}
+
+function rot(){
+ const cp=perOf(TOD);
+ let h=`<div class="card"><b>Your Round 1 Rotation, Batch ${U.cb}</b>`+ROT1.map((p,i)=>`<div class="set" style="padding:8px 0;${i===cp&&TOD<=ROUND1_END?'font-weight:800':''}"><span>${p.label}</span><span style="color:${SC[deptFor(i)]};text-align:right">${deptFor(i)}${i===cp&&TOD<=ROUND1_END?' (now)':''}</span></div>`).join('');
+ 
+ if(U.round2Enabled){
+  const r2Ranges=getRound2Ranges();
+  h+=`<div style="margin-top:14px;padding-top:12px;border-top:1.5px dashed var(--acc)"><b>Your Round 2 Rotation (Starting 29 May 2027)</b><br><small>${U.round2DaysPerRotation} days per department</small></div>`+r2Ranges.map((p,i)=>`<div class="set" style="padding:8px 0;${i===cp&&TOD>ROUND1_END?'font-weight:800':''}"><span>${p.label}</span><span style="color:${SC[deptFor(i)]};text-align:right">${deptFor(i)}${i===cp&&TOD>ROUND1_END?' (now)':''}</span></div>`).join('');
+ }
+ h+='</div>';
+ return h;
+}
+
+function bunkSimulatorsUI(){
+ const L=stats();
+ const options=L.map(o=>`<option value="${o.sub}|${o.ty}" ${U.bunkSub===(o.sub+'|'+o.ty)?'selected':''}>${esc(o.sub)} (${o.ty==='T'?'Theory':o.ty==='P'?'Practical':'Clinical'})</option>`).join('');
+ const selKey=U.bunkSub||(L[0]?L[0].sub+'|'+L[0].ty:'');
+ const targetObj=L.find(o=>(o.sub+'|'+o.ty)===selKey)||L[0];
+
+ let customSimMarkup='';
+ if(targetObj){
+  const cnt=Math.max(1,parseInt(U.bunkCount)||1);
+  const targetPct=targetObj.t;
+  const newAttended=targetObj.p;
+  const newHeld=targetObj.h+cnt;
+  const newPct=newHeld>0?(newAttended/newHeld*100):0;
+  const isDropBelow=newPct<targetPct;
+  const diff=(targetObj.pct==null?0:targetObj.pct)-newPct;
+
+  customSimMarkup=`
+   <div style="margin-top:14px;padding:12px;border-radius:14px;background:color-mix(in srgb,var(--bg) 80%,var(--card));border:1px solid var(--line)">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+     <div><small>Current Attendance</small><br><b style="font-size:18px">${fp(targetObj.pct)}</b></div>
+     <div style="text-align:right"><small>After Bunking ${cnt} class${cnt>1?'es':''}</small><br><b style="font-size:20px;color:${isDropBelow?'var(--bad)':'var(--ok)'}">${fp(newPct)}</b></div>
+    </div>
+    <div style="margin-top:10px;font-size:13px" class="m">
+     ${isDropBelow?`<span style="color:var(--bad)">⚠️ Dropping by ${diff.toFixed(1)}% puts you below your ${targetPct}% requirement!</span>`:`<span style="color:var(--ok)">✅ Safe! You will remain above your ${targetPct}% requirement.</span>`}
+    </div>
+   </div>
+  `;
+ }
+
+ // --- SIMULATOR 2: Routine Morning / Evening Class Skip ---
+ const skipTime=U.routineSkipTime||'morn';
+ const skipFreq=U.routineSkipFreq||'sat';
+
+ let skippedMornCount=0, skippedEveCount=0;
+ const simTheoryStats={};
+ const currentTheoryStats={};
+
+ // Initialize subjects
+ L.filter(o=>o.ty==='T').forEach(o=>{
+  simTheoryStats[o.sub]={sub:o.sub,p:o.p,h:o.h,tot:o.tot};
+  currentTheoryStats[o.sub]={p:o.p,h:o.h,tot:o.tot,pct:o.pct};
+ });
+
+ for(let d=new Date(START);d<=END;d.setDate(d.getDate()+1)){
+  const w=d.getDay();
+  if(!w)continue;
+
+  const rc=U.rec[iso(d)]||{};
+  const isPrep=isExamPrepDay(d);
+  const sl=slots(d);
+
+  // Determine if skip rule applies on day d
+  let shouldSkipDay=false;
+  if(skipFreq==='sat'&&w===6)shouldSkipDay=true;
+  else if(skipFreq==='tri'&&(w===1||w===4||w===6))shouldSkipDay=true;
+  else if(skipFreq==='all'&&(w>=1&&w<=6))shouldSkipDay=true;
+
+  for(const s of sl){
+   if(!s.id||s.ty!=='T')continue;
+   const sub=s.sub;
+   if(!simTheoryStats[sub])simTheoryStats[sub]={sub,p:0,h:0,tot:0};
+
+   const isMorn=s.id==='s1';
+   const isEve=s.id==='s4';
+
+   let willSkipThisSlot=false;
+   if(shouldSkipDay){
+    if(skipTime==='morn'&&isMorn)willSkipThisSlot=true;
+    else if(skipTime==='eve'&&isEve)willSkipThisSlot=true;
+    else if(skipTime==='both'&&(isMorn||isEve))willSkipThisSlot=true;
+   }
+
+   const userMarked=rc[s.id];
+   
+   if(userMarked){
+    // Past/explicitly recorded day: retain existing mark
+    if(userMarked==='C')continue;
+   } else {
+    // Unmarked/Future day
+    if(willSkipThisSlot){
+     if(isMorn)skippedMornCount++;
+     if(isEve)skippedEveCount++;
+     simTheoryStats[sub].h++; // Missed (held++, attended unchanged)
+     continue;
+    } else if(isPrep){
+     simTheoryStats[sub].h++; // Absences from prep mode
+     continue;
+    } else {
+     // Default project as Present for future
+     simTheoryStats[sub].p++;
+     simTheoryStats[sub].h++;
+    }
+   }
+  }
+ }
+
+ const simResults=Object.values(simTheoryStats).map(st=>{
+  const pct=st.h>0?(st.p/st.h*100):null;
+  const cur=currentTheoryStats[st.sub]||{pct:null};
+  return{...st,pct,curPct:cur.pct,diff:cur.pct!=null&&pct!=null?pct-cur.pct:0};
+ });
+
+ let totalSkipped=0;
+ if(skipTime==='morn')totalSkipped=skippedMornCount;
+ else if(skipTime==='eve')totalSkipped=skippedEveCount;
+ else totalSkipped=skippedMornCount+skippedEveCount;
+
+ let h=`<h1>Bunk Simulators</h1><small>Plan ahead and test the real impact on your attendance requirements before missing classes.</small>`;
+
+ h+=`
+  <div class="card" style="border:1.5px solid var(--acc)">
+   <b style="font-size:17px">1️⃣ Subject Class Bunk Simulator</b><br>
+   <small>Simulate missing a specific number of upcoming classes for any subject.</small>
+   <div style="margin-top:12px;display:grid;grid-template-columns:2fr 1fr;gap:10px">
+    <div>
+     <label for="bunk-sub" style="margin-top:0">Select Subject</label>
+     <select id="bunk-sub" onchange="setS('bunkSub',this.value)">${options}</select>
+    </div>
+    <div>
+     <label for="bunk-cnt" style="margin-top:0">Classes to Bunk</label>
+     <input id="bunk-cnt" type="number" min="1" max="50" value="${U.bunkCount||1}" onchange="setT('bunkCount',this.value)">
+    </div>
+   </div>
+   <div style="display:flex;gap:6px;margin-top:8px">
+    <button class="btn" style="padding:6px;font-size:12px" onclick="setT('bunkCount',1)">+1 Class</button>
+    <button class="btn" style="padding:6px;font-size:12px" onclick="setT('bunkCount',3)">+3 Classes</button>
+    <button class="btn" style="padding:6px;font-size:12px" onclick="setT('bunkCount',5)">+5 Classes (1 Wk)</button>
+   </div>
+   ${customSimMarkup}
+  </div>
+ `;
+
+ h+=`
+  <div class="card" style="border:1.5px solid var(--acc)">
+   <b style="font-size:17px">2️⃣ Morning & Evening Class Skip Simulator</b><br>
+   <small>Calculate projected final theory percentages if you routinely skip 9–10 AM morning or 4–5 PM evening lectures.</small>
+   
+   <label style="margin-top:12px">Time Slot to Skip</label>
+   <div class="seg" style="margin-top:6px">
+    <button class="${skipTime==='morn'?'on':''}" onclick="setS('routineSkipTime','morn')">Morning (9-10 AM)</button>
+    <button class="${skipTime==='eve'?'on':''}" onclick="setS('routineSkipTime','eve')">Evening (4-5 PM)</button>
+    <button class="${skipTime==='both'?'on':''}" onclick="setS('routineSkipTime','both')">Both</button>
+   </div>
+
+   <label style="margin-top:12px">Skip Frequency</label>
+   <div class="seg" style="margin-top:6px">
+    <button class="${skipFreq==='sat'?'on':''}" onclick="setS('routineSkipFreq','sat')">Saturday Only</button>
+    <button class="${skipFreq==='tri'?'on':''}" onclick="setS('routineSkipFreq','tri')">Thrice / Wk (M,Th,Sa)</button>
+    <button class="${skipFreq==='all'?'on':''}" onclick="setS('routineSkipFreq','all')">All 6 Days / Wk</button>
+   </div>
+
+   <div style="margin-top:14px;padding:12px;border-radius:14px;background:color-mix(in srgb,var(--bg) 80%,var(--card));border:1px solid var(--line)">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+     <div>
+      <small style="text-transform:uppercase;letter-spacing:.05em;font-weight:700">Projected Absences</small><br>
+      <b style="font-size:18px;color:var(--bad)">${totalSkipped} Classes Skipped</b>
+     </div>
+     <div style="text-align:right">
+      <small style="text-transform:uppercase;letter-spacing:.05em;font-weight:700">Theory Requirement</small><br>
+      <b style="font-size:18px">${U.tT}%</b>
+     </div>
+    </div>
+   </div>
+
+   <div style="margin-top:14px">
+    <b style="font-size:14px">Projected Theory Results by Subject:</b>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+     ${simResults.map(s=>{
+      const isLow=s.pct!=null&&s.pct<U.tT;
+      return `
+       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line)">
+        <div>
+         <b style="font-size:14px;color:${SC[s.sub]||'var(--ink)'}">${esc(s.sub)}</b><br>
+         <small class="m">Current: ${fp(s.curPct)}</small>
+        </div>
+        <div style="text-align:right">
+         <b style="font-size:16px;color:${isLow?'var(--bad)':'var(--ok)'}">${fp(s.pct)}</b>
+         <small style="display:block;font-size:11px;color:${s.diff<=0?'var(--bad)':'var(--ok)'}">${s.diff>=0?'+':''}${s.diff.toFixed(1)}%</small>
+        </div>
+       </div>
+      `;
+     }).join('')}
+    </div>
+   </div>
+  </div>
+ `;
+
+ return h;
+}
+
 function over(){
  const L=stats(),g=agg(L),R=54,C=2*Math.PI*R,mn=Math.min(U.tT,U.tP),col=g.all==null?'var(--mut)':g.all>=mn+5?'var(--ok)':g.all>=mn?'var(--warn)':'var(--bad)';
- let h=`<h1>Attendance</h1><small>Clinical postings run to 28 May 2027. Lectures and practicals are published to 31 Aug 2027.</small><div class="card ring"><svg width="140" height="140" viewBox="0 0 140 140" role="img" aria-label="Overall attendance"><circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--line)" stroke-width="14"/><circle cx="70" cy="70" r="${R}" fill="none" stroke="${col}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${(g.all||0)/100*C} ${C}" transform="rotate(-90 70 70)"/><text x="70" y="78" text-anchor="middle" font-size="26" font-weight="800" fill="var(--ink)" font-family="inherit">${g.all==null?'-':Math.round(g.all)+'%'}</text></svg><div><div class="m">Theory</div><b style="font-size:19px">${fp(g.T)}</b><div class="m" style="margin-top:6px">Practical</div><b style="font-size:19px">${fp(g.P)}</b><div class="m" style="margin-top:6px">Clinical postings</div><b style="font-size:19px">${fp(g.C)}</b></div></div>`;
+
+ let h=`<h1>Attendance</h1><small>Clinical postings run to 28 May 2027 (Round 1). Lectures and practicals are published to 31 Aug 2027.</small>`;
+
+ if(U.examModeEnabled){
+  h+=`<div class="card" style="border:1.5px solid var(--acc);background:color-mix(in srgb,var(--acc) 10%,var(--card))">
+    <b style="color:var(--acc)">🎯 Exam Mode Enabled</b><br>
+    <small>Calculations assume skipping <b>${U.prepDaysI} days</b> before Internal I (1 Mar 2027) and <b>${U.prepDaysII} days</b> before Internal II (28 Jun 2027).</small>
+  </div>`;
+ }
+
+ h+=`<div class="card ring"><svg width="140" height="140" viewBox="0 0 140 140" role="img" aria-label="Overall attendance"><circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--line)" stroke-width="14"/><circle cx="70" cy="70" r="${R}" fill="none" stroke="${col}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${(g.all||0)/100*C} ${C}" transform="rotate(-90 70 70)"/><text x="70" y="78" text-anchor="middle" font-size="26" font-weight="800" fill="var(--ink)" font-family="inherit">${g.all==null?'-':Math.round(g.all)+'%'}</text></svg><div><div class="m">Theory</div><b style="font-size:19px">${fp(g.T)}</b><div class="m" style="margin-top:6px">Practical</div><b style="font-size:19px">${fp(g.P)}</b><div class="m" style="margin-top:6px">Clinical postings</div><b style="font-size:19px">${fp(g.C)}</b></div></div>`;
+
  [['T','Theory lectures',U.tT],['P','Practicals',U.tP],['C','Clinical postings',U.tP]].forEach(([ty,name,t])=>{
   h+=`<h2>${name}</h2><small>Minimum required: ${t}%</small>`+(ty==='C'?rot():'');
   h+=L.filter(o=>o.ty===ty).sort((a,b)=>ty==='C'?rotIdx(a.sub)-rotIdx(b.sub):a.sub.localeCompare(b.sub)).map(card).join('');
  });
  return h;
 }
+
 function sett(){
- return`<h1>Settings</h1><div class="card"><div class="set"><div><b>${esc(U.name)}</b><br><small>Phone ending ${P.slice(-4)}</small></div><button class="btn" style="flex:none;padding:10px 16px" onclick="logout()">Log out</button></div>
+ return`<h1>Settings</h1>
+<div class="card">
+<div class="set"><div><b>${esc(U.name)}</b><br><small>Phone ending ${P.slice(-4)}</small></div><button class="btn" style="flex:none;padding:10px 16px" onclick="logout()">Log out</button></div>
 <div class="set" style="display:block"><b>Clinical posting batch</b>${grid('cb')}</div>
 <div class="set" style="display:block"><b>Practical group</b>${pgSeg()}<small style="display:block;margin-top:8px">Changing a batch updates days you already marked.</small></div>
 <div class="set"><b>Theory minimum</b><div><input type="number" min="1" max="100" value="${U.tT}" aria-label="Theory minimum percent" onchange="setT('tT',this.value)"> %</div></div>
 <div class="set"><div><b>Practical and clinical minimum</b></div><div><input type="number" min="1" max="100" value="${U.tP}" aria-label="Practical minimum percent" onchange="setT('tP',this.value)"> %</div></div>
-<div class="set" style="display:block"><b>Theme</b><div class="seg" style="margin-top:8px">${['auto','light','dark','oled'].map(t=>`<button class="${U.theme===t?'on':''}" onclick="setS('theme','${t}')">${t==='oled'?'OLED':t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</div></div></div>
+</div>
+
+<div class="card" style="border:1.5px solid var(--acc)">
+<div class="set" style="display:block;border-bottom:0">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <b style="font-size:15px">🔄 Round 2 Clinical Postings</b><br>
+      <small>Enable Round 2 postings starting from 29 May 2027</small>
+    </div>
+    <input type="checkbox" ${U.round2Enabled?'checked':''} onchange="setS('round2Enabled',this.checked)">
+  </div>
+  ${U.round2Enabled?`
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <small style="display:block">User-defined days per rotation</small>
+        <span class="m">Cycles in same order as Round 1</span>
+      </div>
+      <div>
+        <input type="number" min="1" max="60" value="${U.round2DaysPerRotation}" style="width:84px" onchange="setT('round2DaysPerRotation',this.value)"> days
+      </div>
+    </div>
+  `:''}
+</div>
+</div>
+
+<div class="card" style="border:1.5px solid var(--acc)">
+<div class="set" style="display:block;border-bottom:0">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <b style="font-size:15px">📚 Exam Mode</b><br>
+      <small>Simulates missing prep days before Internal I & II to recalculate targets</small>
+    </div>
+    <input type="checkbox" ${U.examModeEnabled?'checked':''} onchange="setS('examModeEnabled',this.checked)">
+  </div>
+  ${U.examModeEnabled?`
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <small style="display:block;margin-bottom:4px">Days before Internal I<br>(Starts 1 Mar 2027)</small>
+        <input type="number" min="0" max="30" value="${U.prepDaysI}" style="width:100%" onchange="setT('prepDaysI',this.value)">
+      </div>
+      <div>
+        <small style="display:block;margin-bottom:4px">Days before Internal II<br>(Starts 28 Jun 2027)</small>
+        <input type="number" min="0" max="30" value="${U.prepDaysII}" style="width:100%" onchange="setT('prepDaysII',this.value)">
+      </div>
+    </div>
+  `:''}
+</div>
+</div>
+
+<div class="card">
+<div class="set" style="display:block;border-bottom:0"><b>Theme</b><div class="seg" style="margin-top:8px">${['auto','light','dark','oled'].map(t=>`<button class="${U.theme===t?'on':''}" onclick="setS('theme','${t}')">${t==='oled'?'OLED':t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</div></div>
+</div>
+
 <div class="card"><b>Backup and transfer</b><br><small>Export a JSON backup or import one from another device. The app also keeps a separate local safety copy before replacing saved data.</small><div class="tools"><button class="btn" onclick="exportData()">Export data</button><button class="btn" onclick="document.getElementById('import-file').click()">Import data</button></div><input id="import-file" type="file" accept=".json,application/json" style="display:none" onchange="importData(this)"><div class="tools"><button class="btn" onclick="restoreSafetyCopy()">Restore previous local copy</button></div><small id="backup-msg" role="status"></small></div>
+
 <div class="card"><b>Reset attendance</b><br><small>Clears every mark saved for this account on this device.</small><div class="tools"><button class="btn" onclick="reset()">${armed?'Tap again to erase everything':'Reset all data'}</button></div></div>`;
 }
+
 function render(sc){
  const on=U&&U.done;$('nav').hidden=!on;
- $('#v').innerHTML=!U?login():!U.done?setup():view==='today'?today():view==='over'?over():sett();
+ $('#v').innerHTML=!U?login():!U.done?setup():view==='today'?today():view==='over'?over():view==='bunk'?bunkSimulatorsUI():sett();
  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
  window.scrollTo(0,sc||0);
 }
+
 const refresh=()=>render(window.scrollY);
 function sv(v){view=v;armed=false;render()}
 function go(n){const d=new Date(cur);d.setDate(d.getDate()+n);cur=clamp(d);render()}
 function jump(v){if(!v)return;const p=v.split('-');cur=clamp(new Date(+p[0],p[1]-1,+p[2]));render()}
 function mark(id,v){const k=iso(cur),r=U.rec[k]||(U.rec[k]={});if(r[id]===v)delete r[id];else r[id]=v;save();refresh()}
-function dayAll(v){const k=iso(cur);if(!v)delete U.rec[k];else{const r=U.rec[k]={};slots(cur).forEach(s=>{if(s.id)r[s.id]=v})}save();refresh()}
+function dayAll(v){const k=iso(cur),eligible=slots(cur).filter(s=>s.id);if(v==='A'&&!confirm('Mark all '+eligible.length+' scheduled classes as ABSENT for '+cur.toLocaleDateString('en-IN')+'? This will replace any existing marks for this day.'))return;if(v==='P'&&!confirm('Mark all '+eligible.length+' scheduled classes as PRESENT for '+cur.toLocaleDateString('en-IN')+'? This will replace any existing marks for this day.'))return;if(!v)delete U.rec[k];else{const r=U.rec[k]={};eligible.forEach(s=>{r[s.id]=v})}save();refresh()}
 function setS(k,v){U[k]=v;save();theme();refresh()}
-function setT(k,v){U[k]=Math.min(100,Math.max(1,+v||75));save();refresh()}
+function setT(k,v){U[k]=Math.max(0,+v||0);save();refresh()}
 function reset(){if(!armed){armed=true;refresh();return}U.rec={};armed=false;save();refresh()}
 function logout(){LS('mbbs-cur',null);U=null;P='';view='today';theme();render()}
 function exportData(){
@@ -252,7 +688,17 @@ function importData(input){
   if(!valid){fail('This is not a recognised Attendance Sarthi backup. Your current data is unchanged.');return}
   const validMarks=Object.entries(d.rec).every(([date,marks])=>/^\d{4}-\d{2}-\d{2}$/.test(date)&&marks&&typeof marks==='object'&&!Array.isArray(marks)&&Object.entries(marks).every(([id,v])=>['s1','s2','s3','s4','f0','f1','f2','fv'].includes(id)&&['P','A','C'].includes(v)));
   if(!validMarks){fail('The backup contains invalid attendance records. Your current data is unchanged.');return}
-  if(!confirm('Import this backup into the currently signed-in profile? The app will first save a separate local safety copy of the current data. Importing will then replace the current attendance marks and settings. Continue?')){fail('Import cancelled. Your current data is unchanged.');return}
+  
+  let diffWarning = '';
+  if (d.name && U.name && d.name.trim().toLowerCase() !== U.name.trim().toLowerCase()) {
+    diffWarning += `\n\n⚠️ WARNING: This backup belongs to "${d.name}", but you are currently logged in as "${U.name}".`;
+  }
+  if (d.cb && U.cb && d.cb !== U.cb) {
+    diffWarning += `\n\n⚠️ WARNING: This backup is for batch "${d.cb}", but your current batch is "${U.cb}".`;
+  }
+
+  if(!confirm('Import this backup into the currently signed-in profile?' + diffWarning + '\n\nThe app will first save a separate local safety copy of the current data. Importing will then replace the current attendance marks and settings. Continue?')){fail('Import cancelled. Your current data is unchanged.');return}
+  
   makeSafetyCopy(P);
   U=Object.assign(def(),d,{rec:d.rec});
   LS(profileKey(P),U);theme();input.value='';armed=false;view='set';render();
