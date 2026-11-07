@@ -131,11 +131,14 @@ nav button.on{background:var(--acc);color:#071022}
 button{cursor:pointer}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
 @media(min-width:600px){body{padding-top:34px}.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}.card{padding:20px 22px}}
+.credit{margin:28px 0 0;text-align:center;font-size:12.5px;color:var(--mut);letter-spacing:0}
+.credit b{color:var(--ink);font-weight:600}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
 <main id="v"></main>
+<footer class="credit">Made with <span role="img" aria-label="love">💖</span> for ASIMSR students by <b>Abhinav (BR07)</b></footer>
 <nav hidden><button data-v="today" onclick="sv('today')">Today</button><button data-v="over" onclick="sv('over')">Overview</button><button data-v="set" onclick="sv('set')">Settings</button></nav>
 <script>
 const START=new Date(2026,8,28),LEC_END=new Date(2027,7,31),CLINICAL_THEORY_END=new Date(2027,0,31),END=new Date(2027,7,31);
